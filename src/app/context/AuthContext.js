@@ -28,29 +28,13 @@ export const AuthProvider = ({ children }) => {
     const signUp = async (email, password) => {
         try {
             // Sign up the user
-            const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+            const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
             });
 
-            if (signUpError) throw signUpError;
-
-            // If signup successful, immediately sign in the user to establish a session
-            if (signUpData.user) {
-                const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-                    email,
-                    password,
-                });
-
-                if (signInError) throw signInError;
-
-                // Update the local user state
-                setUser(signInData.user);
-
-                return { data: signInData, error: null };
-            }
-
-            return { data: signUpData, error: null };
+            if (error) throw error;
+            return { data, error: null };
         } catch (error) {
             return { data: null, error };
         }
@@ -101,8 +85,46 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    // Function to check if a user's email has been confirmed
+    const checkEmailConfirmed = async (email) => {
+        try {
+            // This is a workaround since Supabase doesn't provide a direct way to check email confirmation
+            // We attempt to sign in with an incorrect password and check the error message
+            const { error } = await supabase.auth.signInWithPassword({
+                email,
+                password: 'checking-confirmation-status',
+            });
+
+            if (error) {
+                if (error.message.includes('Invalid login credentials')) {
+                    // Email is confirmed, but password is wrong
+                    return { isConfirmed: true, error: null };
+                } else if (error.message.includes('Email not confirmed')) {
+                    // Email is not confirmed
+                    return { isConfirmed: false, error: null };
+                } else {
+                    // Some other error
+                    return { isConfirmed: false, error };
+                }
+            }
+
+            // Should never reach here with incorrect password
+            return { isConfirmed: true, error: null };
+        } catch (error) {
+            return { isConfirmed: false, error };
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut, updateUserRole }}>
+        <AuthContext.Provider value={{
+            user,
+            loading,
+            signUp,
+            signIn,
+            signOut,
+            updateUserRole,
+            checkEmailConfirmed
+        }}>
             {children}
         </AuthContext.Provider>
     );

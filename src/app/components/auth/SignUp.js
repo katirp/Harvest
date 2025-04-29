@@ -19,17 +19,17 @@ export default function SignUp() {
         setIsLoading(true);
 
         try {
-            const { error } = await signUp(email, password);
+            const { data, error } = await signUp(email, password);
+
             if (error) {
                 setError(error.message);
                 setIsLoading(false);
                 return;
             }
 
-            // Add a slight delay to ensure session is established
-            setTimeout(() => {
-                router.push('/select-role');
-            }, 1000);
+            // Redirect to confirmation page with the email
+            router.push(`/confirm-email?email=${encodeURIComponent(email)}`);
+
         } catch (err) {
             setError('An unexpected error occurred');
             setIsLoading(false);

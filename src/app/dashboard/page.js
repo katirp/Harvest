@@ -14,7 +14,7 @@ export default function Dashboard() {
     useEffect(() => {
         // Redirect if not authenticated
         if (!loading && !user) {
-            router.push('/signup');
+            router.push('/signin');
         }
     }, [user, loading, router]);
 
@@ -46,7 +46,7 @@ export default function Dashboard() {
 
     const handleSignOut = async () => {
         await signOut();
-        router.push('/signup');
+        router.push('/signin');
     };
 
     if (loading || loadingRole) {
