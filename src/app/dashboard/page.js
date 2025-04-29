@@ -59,18 +59,26 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-[#fffbeb] p-4">
-            <div className="max-w-7xl mx-auto">
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold text-brown-800">Harvest</h1>
-                    <button
-                        onClick={handleSignOut}
-                        className="px-4 py-2 bg-[#b4540a] text-white rounded hover:bg-brown-700"
-                    >
-                        Sign Out
-                    </button>
+        <div className="min-h-screen bg-[#fffbeb]">
+            {/* Sticky Nav Bar */}
+            <div className="sticky top-0 z-50 bg-white shadow-sm">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between items-center h-16">
+                        <div className="flex-shrink-0">
+                            <h1 className="text-2xl font-bold text-[#b4540a]">Harvest</h1>
+                        </div>
+                        <button
+                            onClick={handleSignOut}
+                            className="px-4 py-2 bg-white text-[#b4540a] rounded hover:bg-[#fffbeb] transition-colors"
+                        >
+                            Sign Out
+                        </button>
+                    </div>
                 </div>
+            </div>
 
+            {/* Main Content */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {userRole === 'restaurant' && (
                     <div className="bg-white rounded-lg shadow p-6">
                         <h2 className="text-xl font-semibold mb-4">Restaurant Dashboard</h2>
